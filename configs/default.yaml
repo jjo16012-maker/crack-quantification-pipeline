@@ -1,0 +1,27 @@
+# Default Configuration for Crack Detection & Quantification Pipeline
+
+data:
+  image_size: 512
+  eval_dataset: "cubit_seg"
+  eval_dir: "data/cubit_seg"
+  train_datasets:
+    - "deepcrack"
+    - "crack500"
+    - "masonry"
+
+preprocess:
+  use_clahe: true
+  clahe_clip_limit: 2.0
+  clahe_tile_grid_size: [8, 8]
+
+segmentation:
+  prob_threshold: 0.5
+  min_object_area: 20        # Remove noisy connected components smaller than N pixels
+  morph_closing_kernel: 3    # Kernel size for connecting fragmented crack segments
+
+measurement:
+  prune_spur_length: 5       # Prune skeleton branches shorter than N pixels
+  mm_per_pixel: null         # Set float value (e.g., 0.25) when camera scale is known
+
+evaluation:
+  tolerance_pixels: 2        # Boundary tolerance (px) for thin crack F1 evaluation
