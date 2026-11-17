@@ -100,7 +100,10 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
 # 3. 필수 패키지 설치
 pip install -r requirements.txt
 
-# 4. GPU 및 라이브러리 환경 검증
+# 4. 프로젝트 패키지 설치 (editable)
+pip install -e .
+
+# 5. GPU 및 라이브러리 환경 검증
 python scripts/check_env.py
 ```
 

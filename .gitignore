@@ -29,3 +29,8 @@ results/cache/
 Thumbs.db
 .vscode/
 .idea/
+
+# Packaging artifacts
+*.egg-info/
+build/
+dist/
