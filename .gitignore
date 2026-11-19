@@ -34,3 +34,6 @@ Thumbs.db
 *.egg-info/
 build/
 dist/
+
+#roadmap
+roadmap.md
