@@ -1,0 +1,2 @@
+method,dataset,num_images,f1_pct,tol_f1_pct,iou_pct,precision_pct,recall_pct,length_mape_pct,length_mae_px,max_width_mae_px,mean_width_mae_px,latency_ms
+classical,cubit_seg (all),5462,53.74,64.66,36.75,47.99,61.07,319.36,390.95,6.17,3.26,10.88

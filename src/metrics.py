@@ -3,9 +3,7 @@
 Provides pixel-level segmentation metrics (IoU, F1/Dice, Precision, Recall),
 boundary-tolerant F1 for thin structures, and regression error metrics
 (MAE, RMSE, MAPE) for crack length and width estimation.
-"""
 
-"""
 - TP: 실제 균열(1)을 모델도 균열(1)로 맞힌 픽셀 수
 - FP: 배경(0)인데 모델은 균열(1)로 찍은 픽셀 수
 - FN: 실제 균열(1)인데 모델은 배경(0)으로 찍은 픽셀 수
@@ -43,7 +41,7 @@ def compute_confusion_counts(
     pred_mask: np.ndarray,
     gt_mask: np.ndarray,
 ) -> Dict[str, int]:
-    """Compute pixel-wise True Positive, False Positive, and False Negative counts."""
+    """Compute pixel-wise TP, FP, and FN counts."""
     pred = _to_binary_uint8(pred_mask)
     gt = _to_binary_uint8(gt_mask)
     if pred.shape != gt.shape:
@@ -121,17 +119,21 @@ def compute_tolerance_counts(
 
 
 def tolerance_metrics_from_counts(
-    tol_tp_pred: float,
-    pred_total: float,
-    tol_tp_gt: float,
-    gt_total: float,
+    tol_tp_pred: float,  # 모델이 예측한 픽셀 중 정답에서 2px 이내 들어간 픽셀 수
+    pred_total: float,  # 모델이 균열이라고 예측한 전체 픽셀 수
+    tol_tp_gt: float,  # 실제 정답 픽셀 중 모델이 예측한 곳에서 2px 이내에 커버된 픽셀
+    gt_total: float,  # 실제 정답 균열의 전체 픽셀 수
 ) -> Dict[str, float]:
-    """Compute boundary-tolerant Precision, Recall, and F1 from aggregated counts."""
+    # Compute boundary-tolerant Precision, Recall, and F1 from aggregated counts.
     if pred_total == 0 and gt_total == 0:
+        # 정답에 균열이 없고, 모델도 균열 없다고 예측 -> 1.0
         return {"tol_precision": 1.0, "tol_recall": 1.0, "tol_f1": 1.0}
 
+    # (정답 근처에 찍은 예측 픽셀) / (전체 예측 픽셀)
     tol_precision = tol_tp_pred / (pred_total + EPSILON)
+    # (예측 근처에 커버된 정답 픽셀) / (전체 정답 픽셀)
     tol_recall = tol_tp_gt / (gt_total + EPSILON)
+    # precision과 recall의 조화평균
     tol_f1 = (2.0 * tol_precision * tol_recall) / (tol_precision + tol_recall + EPSILON)
     return {
         "tol_precision": float(tol_precision),
